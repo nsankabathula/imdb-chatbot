@@ -1,1 +1,4 @@
-/src/python/data/*.tsv
+*.tsv
+*.tsv.gz
+*/.ipynb_checkpoints/*
+src/python/dask-worker-space/
