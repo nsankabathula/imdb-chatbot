@@ -1,4 +1,6 @@
 *.tsv
+*.pyc
+*/__pycache__/*
 !*.config.tsv
 *.tsv.gz
 src/python/.ipynb_checkpoints/
