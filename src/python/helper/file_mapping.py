@@ -141,7 +141,7 @@ INTERNAL_FILE_MAPPINGS = {
         'merged.title.ratings.tsv': {
           'index_col': None, 
           'dtype' : {
-                'numVotes': np.dtype('f'),
+                'numVotes': np.dtype('S'),
                 'titleType': np.dtype('S'),
                 'isAdult': np.dtype('?'),
                 'primaryTitle': np.dtype('S'),
@@ -149,23 +149,28 @@ INTERNAL_FILE_MAPPINGS = {
                 'endYear': np.dtype('S'),
                 'startYear': np.dtype('S'),
                 'originalTitle': np.dtype('S'),
-                'runtimeMinutes': np.dtype('f'),
+                'runtimeMinutes': np.dtype('S'),
                 'tconst': np.dtype('S'),
                 'wikiTitle': np.dtype('S'),
-                'averageRating': np.dtype('f')
+                'averageRating': np.dtype('S')
                 },      
           'filePath':None,
-          'to_replace': None,
-          'to_replace#':{        
+          'to_replace#': None,
+          'to_replace':{        
               'startYear':{'\\N':0, 'NA':0},    
-              'endYear':{'\\N':0, 'NA':0},       
+              'endYear':{'\\N':0, 'NA':0}, 
+              'runtimeMinutes':{'Comedy':None}
           },
           'true_values':None,
           'false_values':None,
           'usecols': None,    
           'converters' : {                                
                  'startYear':[{'function':Utils.parse_int, 'args':(0,)}],                 
-                 'endYear':[{'function':Utils.parse_int, 'args':(0,)}],                
+                 'endYear':[{'function':Utils.parse_int, 'args':(0,)}],  
+                 'numVotes':[{'function':Utils.parse_int, 'args':(0,)}],  
+                 'runtimeMinutes':[{'function':Utils.parse_float, 'args':(0,)}], 
+                 'averageRating':[{'function':Utils.parse_float, 'args':(0,)}], 
+                 'genres' :[{'function':Utils.split, 'args':(',',)}],
                 },      
         }, 
         'merged.names.principals.tsv': {
@@ -190,14 +195,17 @@ INTERNAL_FILE_MAPPINGS = {
           'to_replace': None,
           'to_replace#':{        
               'deathYear':{'\\N':0, 'NA':0},    
-              'birthYear':{'\\N':0, 'NA':0},       
+              'birthYear':{'\\N':0, 'NA':0},  
+              'job':{'\\N':0, 'NA':0},  
           },
           'true_values':None,
           'false_values':None,
           'usecols': None,    
           'converters' : {                                
                  'birthYear':[{'function':Utils.parse_int, 'args':(0,)}],                 
-                 'deathYear':[{'function':Utils.parse_int, 'args':(0,)}],                
+                 'deathYear':[{'function':Utils.parse_int, 'args':(0,)}], 
+                 'primaryProfession' :[{'function':Utils.split, 'args':(',',)}],
+                 'knownForTitles' :[{'function':Utils.split, 'args':(',',)}],
                 },      
         }, 
     }

@@ -40,6 +40,9 @@ def readFile(file, nrows=None, cluster=None ):
         mapping['filePath'] = ''.join([LESSON_DATA_FOLDER, file])
         
     usecols = list(dtype.keys())
+    
+    print('{}'.format(usecols))
+    
     if(cluster != None):
         dview = cluster[:]
         dview.scatter(
@@ -127,9 +130,9 @@ def merge_title_ratings(mergeFilePath, nrows = 10):
     
     ratings = readFile('title.ratings.tsv', nrows = nrows)
     #ratings.info()
-
     titles = readFile('title.basics.tsv', nrows = nrows)
-    titles['titleWiki'] = titles['primaryTitle'].apply(Utils.wikiLink)
+    
+    titles['wikiTitle'] = titles['primaryTitle'].apply(Utils.wikiLink)
     print ('wikipedia Done: ' + time.strftime("%Y-%m-%d %H:%M:%S"))
 
     #titles.info()
@@ -155,7 +158,7 @@ def merge_title_ratings(mergeFilePath, nrows = 10):
     gc.collect()
     
 def mergeAll():
-    merge_title_ratings(''.join([LESSON_DATA_FOLDER, 'test.titles.1.tsv']), 20)
-    merge_names_principals(''.join([LESSON_DATA_FOLDER, 'test.names.1.tsv']), 20)
+    merge_title_ratings(''.join([LESSON_DATA_FOLDER, 'merged.title.ratings.tsv']), None)
+    merge_names_principals(''.join([LESSON_DATA_FOLDER, 'merged.names.principals.tsv']), None)
 
     

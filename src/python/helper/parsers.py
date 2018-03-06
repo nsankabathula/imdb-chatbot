@@ -1,5 +1,5 @@
 import datetime 
-import numpy
+import numpy as np
 
 class Utils:
     
@@ -18,7 +18,7 @@ class Utils:
     @staticmethod
     def parse_int(i, defaultValue=None):    
        # print (defaultValue)
-        if ( i == None or str(i) == '' or str(i) == 'NaN' or i == numpy.NaN) :
+        if ( i == None or str(i) == '' or str(i) == 'NaN' or i == np.NaN) :
             return defaultValue   
         else:
             try:
@@ -28,9 +28,9 @@ class Utils:
                 return i
             
     @staticmethod
-    def parse_float(f):
+    def parse_float(f, defaultValue=None):
         if str(f) == '' or f == None:
-            return None
+            return defaultValue
         else:
             try:
                 return float(f)
