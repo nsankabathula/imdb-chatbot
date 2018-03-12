@@ -173,6 +173,41 @@ INTERNAL_FILE_MAPPINGS = {
                  'genres' :[{'function':Utils.split, 'args':(',',)}],
                 },      
         }, 
+      'merged.title.ratings.sql': {
+          'index_col': None, 
+          'dtype' : {
+                'numVotes': np.dtype('S'),
+                'titleType': np.dtype('S'),
+                'isAdult': np.dtype('?'),
+                'primaryTitle': np.dtype('S'),
+                'genres': np.dtype('S'),
+                'endYear': np.dtype('S'),
+                'startYear': np.dtype('S'),
+                'originalTitle': np.dtype('S'),
+                'runtimeMinutes': np.dtype('S'),
+                'tconst': np.dtype('S'),
+                'wikiTitle': np.dtype('S'),
+                'averageRating': np.dtype('S')
+                },      
+          'filePath':'merged.title.ratings.tsv',          
+          'to_replace': None,
+          'to_replace#':{        
+              'startYear':{'\\N':0, 'NA':0},    
+              'endYear':{'\\N':0, 'NA':0}, 
+              'runtimeMinutes':{'Comedy':None}
+          },
+          'true_values':None,
+          'false_values':None,
+          'usecols': None,    
+          'converters' : {                                
+                 'startYear':[{'function':Utils.parse_int, 'args':(0,)}],                 
+                 'endYear':[{'function':Utils.parse_int, 'args':(0,)}],  
+                 'numVotes':[{'function':Utils.parse_int, 'args':(0,)}],  
+                 'runtimeMinutes':[{'function':Utils.parse_float, 'args':(0,)}], 
+                 'averageRating':[{'function':Utils.parse_float, 'args':(0,)}],                  
+                },      
+        }, 
+    
         'merged.names.principals.tsv': {
           'index_col': None, 
           'dtype' :{
@@ -191,7 +226,7 @@ INTERNAL_FILE_MAPPINGS = {
                 'nconst': np.dtype('S')
           }
             ,      
-          'filePath':None,
+          'filePath':None,          
           'to_replace': None,
           'to_replace#':{        
               'deathYear':{'\\N':0, 'NA':0},    
@@ -206,6 +241,39 @@ INTERNAL_FILE_MAPPINGS = {
                  'deathYear':[{'function':Utils.parse_int, 'args':(0,)}], 
                  'primaryProfession' :[{'function':Utils.split, 'args':(',',)}],
                  'knownForTitles' :[{'function':Utils.split, 'args':(',',)}],
+                },      
+        }, 
+    'merged.names.principals.sql': {
+          'index_col': None, 
+          'dtype' :{
+                'ordering': np.dtype('i'),
+                'job': np.dtype('S'),
+                'characters': np.dtype('S'),
+                'primaryName': np.dtype('S'),
+                'deathYear': np.dtype('S'),
+                'primaryProfession': np.dtype('S'),
+                'wiki': np.dtype('S'),
+                'isAlive': np.dtype('?'),
+                'birthYear': np.dtype('S'),
+                'category': np.dtype('S'),
+                'tconst': np.dtype('S'),
+                'knownForTitles': np.dtype('S'),
+                'nconst': np.dtype('S')
+          }
+            ,      
+          'filePath':'merged.names.principals.tsv',          
+          'to_replace': None,
+          'to_replace#':{        
+              'deathYear':{'\\N':0, 'NA':0},    
+              'birthYear':{'\\N':0, 'NA':0},  
+              'job':{'\\N':0, 'NA':0},  
+          },
+          'true_values':None,
+          'false_values':None,
+          'usecols': None,    
+          'converters' : {                                
+                 'birthYear':[{'function':Utils.parse_int, 'args':(0,)}],                 
+                 'deathYear':[{'function':Utils.parse_int, 'args':(0,)}]                 
                 },      
         }, 
     }

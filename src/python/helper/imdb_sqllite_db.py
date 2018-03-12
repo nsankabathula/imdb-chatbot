@@ -9,7 +9,7 @@ class __SQLLiteDB:
             self.__sqlFilePath = './data/imdb.sqllite'
         else:
             self.__sqlFilePath = sqlFilePath
-            
+
         print ('IMDB SQLLite Database: {}'.format(self.__sqlFilePath))    
         self.__connection =  sqlite3.connect(self.__sqlFilePath)
         self.__cursor =  self.__connection.cursor()
@@ -29,6 +29,11 @@ class __SQLLiteDB:
     def close(self):
         if(self.__connection):
             self.__connection.close()
+    
+    def get(self):
+        return self.__connection, self.__cursor
+    
+    
 
 class IMDBSQLLite: pass
 IMDBSQLLite = SingletonDecorator(__SQLLiteDB)      

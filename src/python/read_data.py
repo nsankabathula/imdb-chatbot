@@ -35,9 +35,12 @@ def readFile(file, nrows=None, cluster=None ):
     print ('Start: ' + time.strftime("%Y-%m-%d %H:%M:%S"))
     mapping = FILE_MAPPINGS.getMapping(file)
     dtype = mapping['dtype']
+        
     
-    if(mapping['filePath'] == None):
-        mapping['filePath'] = ''.join([LESSON_DATA_FOLDER, file])
+    if(mapping['filePath'] == None):        
+        filePath = ''.join([LESSON_DATA_FOLDER, file])
+    else: 
+        filePath = ''.join([LESSON_DATA_FOLDER, mapping['filePath']])
         
     usecols = list(dtype.keys())
     
@@ -47,7 +50,7 @@ def readFile(file, nrows=None, cluster=None ):
         dview = cluster[:]
         dview.scatter(
             "df", 
-            pandas.read_table(mapping['filePath'], 
+            pandas.read_table(filePath, 
                            index_col=mapping['index_col'], 
                            dtype = dtype, 
                            #na_values = ['//N'],
@@ -60,7 +63,7 @@ def readFile(file, nrows=None, cluster=None ):
         )
         df = pandas.concat([i for i in dview["df"]])
     else:
-        df = pandas.read_table(mapping['filePath'], 
+        df = pandas.read_table(filePath, 
                            index_col=mapping['index_col'], 
                            dtype = dtype, 
                            #na_values = ['//N'],
@@ -85,7 +88,7 @@ def readFile(file, nrows=None, cluster=None ):
     print ('End: {}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))  )
     return df
 
-def merge_names_principals(mergeFilePath, nrows = 10):    
+def merge_names_principals(mergeFilePath, conn, nrows = 10):    
     names = readFile('name.basics.tsv', nrows = nrows)
 
     names['isAlive'] = names['deathYear'] == 0
@@ -93,6 +96,7 @@ def merge_names_principals(mergeFilePath, nrows = 10):
 
     names['wiki'] = names['primaryName'].apply(Utils.wikiLink)
     print ('wikipedia Done: ' + time.strftime("%Y-%m-%d %H:%M:%S"))
+    #print (names['wiki']);
     #names.info()
 
 
@@ -109,12 +113,18 @@ def merge_names_principals(mergeFilePath, nrows = 10):
 
     merged_names_principals = title_principals.merge(names, on=['nconst'], how='left')
     print ('Merge done: {}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))  )
-    
-    if(mergeFilePath == None):
-        mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.names.principals.tsv'])
         
-    merged_names_principals.to_csv(mergeFilePath, '\t')
-    print ('To CSV done: {}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))  )
+    if(mergeFilePath == None):
+        if(conn == None): 
+            mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.names.principals.tsv'])                    
+            
+                            
+    if(conn == None):
+        merged_names_principals.to_csv(mergeFilePath, '\t', index = False)
+        print ('To FILE {} done: {}'.format(mergeFilePath, time.strftime("%Y-%m-%d %H:%M:%S"))  )
+    else:
+        merged_names_principals.to_sql("merged_names_principals", conn, if_exists="replace", index = False)
+        print ('To TABLE {} done: {}'.format('merged_names_principals', time.strftime("%Y-%m-%d %H:%M:%S"))  )    
 
     #merged_names_principals.to_json(path_or_buf='./data/merged.names.principals.json', orient= 'records' )
 
@@ -126,7 +136,7 @@ def merge_names_principals(mergeFilePath, nrows = 10):
     gc.collect()
 
     
-def merge_title_ratings(mergeFilePath, nrows = 10):
+def merge_title_ratings(mergeFilePath, conn, nrows = 10):
     
     ratings = readFile('title.ratings.tsv', nrows = nrows)
     #ratings.info()
@@ -143,11 +153,17 @@ def merge_title_ratings(mergeFilePath, nrows = 10):
     print ('Merge done: {}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))  )
     
     if(mergeFilePath == None):
-        mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.title.ratings.tsv'])
-        
-        
-    merged_titles_ratings.to_csv(mergeFilePath, '\t')
-    print ('To CSV done: {}'.format(time.strftime("%Y-%m-%d %H:%M:%S"))  )
+        if(conn == None): 
+            mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.title.ratings.tsv'])                    
+            
+                            
+    if(conn == None):
+        merged_titles_ratings.to_csv(mergeFilePath, '\t', index = False)
+        print ('To FILE {} done: {}'.format(mergeFilePath, time.strftime("%Y-%m-%d %H:%M:%S"))  )
+    else:
+        merged_titles_ratings.to_sql("merged_titles_ratings", conn, if_exists="replace", index = False)
+        print ('To TABLE {} done: {}'.format('merged_titles_ratings', time.strftime("%Y-%m-%d %H:%M:%S"))  )
+    
     #merged_titles_ratings.to_json('./data/merged.title.ratings.json')
     #titles[titles['primaryTitle'] != titles['originalTitle']].head(5)
     #titles.info()
@@ -157,8 +173,13 @@ def merge_title_ratings(mergeFilePath, nrows = 10):
     del [titles, ratings, merged_titles_ratings]
     gc.collect()
     
-def mergeAll():
-    merge_title_ratings(''.join([LESSON_DATA_FOLDER, 'merged.title.ratings.tsv']), None)
-    merge_names_principals(''.join([LESSON_DATA_FOLDER, 'merged.names.principals.tsv']), None)
+def mergeAll(nrows = 10):
+    merge_title_ratings(mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.title.ratings.tsv']), conn= None, nrows = nrows)
+    merge_names_principals(mergeFilePath = ''.join([LESSON_DATA_FOLDER, 'merged.names.principals.tsv']), conn= None, nrows = nrows)
+    
+def mergeAllToTable(conn, nrows = 10):    
+    merge_title_ratings(mergeFilePath = None, conn= conn, nrows = nrows)
+    merge_names_principals(mergeFilePath = None, conn= conn, nrows = nrows)
+    
 
     
