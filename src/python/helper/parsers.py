@@ -1,7 +1,24 @@
 import datetime 
 import numpy as np
+import pandas as pd
 
 class Utils:
+    
+    @staticmethod
+    def callFunction(columnData, **funDict):
+    
+        converFuns = funDict[columnData.name] #[{'function':split, 'args':(',')}]
+
+        if(converFuns != None):
+            for funSpec in converFuns:
+                params = funSpec['args']
+                #print ('args: ', params, ' <> ', params == None)
+                if(params == None):                
+                    columnData = columnData.apply(funSpec['function'] )
+                else:            
+                    columnData = columnData.apply(funSpec['function'], args=params )
+
+        return columnData
     
     @staticmethod
     def index_array(length):
@@ -38,11 +55,14 @@ class Utils:
                 return f
             
     @staticmethod
-    def parse_bool(boolean):
+    def parse_bool(boolean, mapping = None):
         if str(boolean) == '' or boolean == None:
             return None
         else:        
-            return boolean =='True' 
+            if(mapping != None):
+                return mapping[str(boolean)]
+            else:
+                return boolean =='True' 
 
     @staticmethod
     def split(data, delimiter=',' ):
@@ -76,8 +96,8 @@ class Utils:
             return data
         
     @staticmethod
-    def wikiLink(name):
-        link = ''.join (['https://en.wikipedia.org/wiki/', ''.join ([n + '_' for n in name.split()])]).rstrip('_')    
+    def wikiLink(name, base = 'https://en.wikipedia.org/wiki/'):
+        link = ''.join ([base, ''.join ([n + '_' for n in name.split()])]).rstrip('_')    
         return link
 
     @staticmethod
@@ -106,7 +126,16 @@ class Utils:
             }).assign(**{col:np.concatenate(df[col].values) for col in lst_cols}) \
               .append(df.loc[lens==0, idx_cols]).fillna(fill_value) \
               .loc[:, df.columns]
-          
+                
+    @staticmethod
+    def mem_usage(pandas_obj):
+        if isinstance(pandas_obj,pd.DataFrame):
+            usage_b = pandas_obj.memory_usage(deep=True).sum()
+        else: # we assume if not a df it's a series
+            usage_b = pandas_obj.memory_usage(deep=True)
+        usage_mb = usage_b / 1024 ** 2 # convert bytes to megabytes
+        return "{:03.2f} MB".format(usage_mb)  
+    
     # Python does not have switch statment, rather use dict approach
     parser = {
             'int':parse_int,

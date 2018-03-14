@@ -76,6 +76,27 @@ INTERNAL_FILE_MAPPINGS = {
                      'episodeNumber': [{'function':Utils.parse_int, 'args':None}]
                     }
         },
+    'title.episodes.sql': {
+          'index_col': None, 
+          'dtype' : {'tconst':np.dtype('S'),
+                     'parentTconst':np.dtype('S'),
+                     'seasonNumber':np.dtype('S'),  
+                     'episodeNumber':np.dtype('S')  
+                    },
+          'split' :None,
+          'filePath':None,
+          'to_replace':{
+              'seasonNumber':{'\\N':None},
+              'episodeNumber':{'\\N':None},                   
+          },
+          'true_values':None,
+          'false_values':None,      
+          'usecols': None,
+          'converters' : {                 
+                     'seasonNumber':[{'function':Utils.parse_int, 'args':None}],
+                     'episodeNumber': [{'function':Utils.parse_int, 'args':None}]
+                    }
+        },    
     'title.principals.tsv': {
           'index_col': None, 
           'dtype' : {'tconst':str,
@@ -155,11 +176,10 @@ INTERNAL_FILE_MAPPINGS = {
                 'averageRating': np.dtype('S')
                 },      
           'filePath':None,
-          'to_replace#': None,
-          'to_replace':{        
+          'to_replace': None,
+          'to_replace#':{        
               'startYear':{'\\N':0, 'NA':0},    
-              'endYear':{'\\N':0, 'NA':0}, 
-              'runtimeMinutes':{'Comedy':None}
+              'endYear':{'\\N':0, 'NA':0},              
           },
           'true_values':None,
           'false_values':None,
@@ -170,7 +190,7 @@ INTERNAL_FILE_MAPPINGS = {
                  'numVotes':[{'function':Utils.parse_int, 'args':(0,)}],  
                  'runtimeMinutes':[{'function':Utils.parse_float, 'args':(0,)}], 
                  'averageRating':[{'function':Utils.parse_float, 'args':(0,)}], 
-                 'genres' :[{'function':Utils.split, 'args':(',',)}],
+                 'genres' :[{'function':Utils.split, 'args':(',',)}],                 
                 },      
         }, 
       'merged.title.ratings.sql': {
@@ -204,7 +224,9 @@ INTERNAL_FILE_MAPPINGS = {
                  'endYear':[{'function':Utils.parse_int, 'args':(0,)}],  
                  'numVotes':[{'function':Utils.parse_int, 'args':(0,)}],  
                  'runtimeMinutes':[{'function':Utils.parse_float, 'args':(0,)}], 
-                 'averageRating':[{'function':Utils.parse_float, 'args':(0,)}],                  
+                 'averageRating':[{'function':Utils.parse_float, 'args':(0,)}], 
+                 'isAdult':[{'function':Utils.parse_bool, 'args':({'0':False,'1':True},)}],  
+                 'genres' :[{'function':Utils.split, 'args':(',',)}],                
                 },      
         }, 
     
@@ -241,6 +263,7 @@ INTERNAL_FILE_MAPPINGS = {
                  'deathYear':[{'function':Utils.parse_int, 'args':(0,)}], 
                  'primaryProfession' :[{'function':Utils.split, 'args':(',',)}],
                  'knownForTitles' :[{'function':Utils.split, 'args':(',',)}],
+                 
                 },      
         }, 
     'merged.names.principals.sql': {
@@ -273,7 +296,10 @@ INTERNAL_FILE_MAPPINGS = {
           'usecols': None,    
           'converters' : {                                
                  'birthYear':[{'function':Utils.parse_int, 'args':(0,)}],                 
-                 'deathYear':[{'function':Utils.parse_int, 'args':(0,)}]                 
+                 'deathYear':[{'function':Utils.parse_int, 'args':(0,)}],   
+                 'primaryProfession' :[{'function':Utils.split, 'args':(',',)}],
+                 'knownForTitles' :[{'function':Utils.split, 'args':(',',)}],
+                 #'isAlive':[{'function':Utils.parse_bool, 'args':({'0':False,'1':True},)}],  
                 },      
         }, 
     }

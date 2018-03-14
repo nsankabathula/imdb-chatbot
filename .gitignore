@@ -1,7 +1,10 @@
 *.tsv
 *.pyc
+titles.*.json
 */__pycache__/*
 !*.config.tsv
 *.tsv.gz
+*.sqllite
+*.tar.gz
 src/python/.ipynb_checkpoints/
 src/python/dask-worker-space/
