@@ -37,7 +37,7 @@ def prep_title(title):
     limit = title['limit']
     offset = title['offset']
     file = title['file']
-    q_titles = "select  * from merged_title_ratings LIMIT {limit} OFFSET {offset}".format(limit = limit, offset = offset)    
+    q_titles = "select  * from merged_title_ratings where titleType like 'tvS%' LIMIT {limit} OFFSET {offset}".format(limit = limit, offset = offset)    
     df_titles = imdb_db.query(q_titles)
     df_titles = transform(df_titles, 'merged.title.ratings.sql')
     df_titles['imdb'] = df_titles['tconst'].apply(Utils.wikiLink, args = ('www.imdb.com/title/', ))

@@ -26,19 +26,25 @@ class __ESHelper(__IESHelper):
         if(mapping != None and doc_type != None):
             self.__esconnection.indices.put_mapping(index=index, doc_type=doc_type, body=mapping)
     
-    def bulk_stream(self, iterator):
+    def bulk_stream(self, iterator, failureThreshold = 100):
         success  = 0;
-        for ok, result in esHelper.streaming_bulk(self.__esconnection, iterator):
+        failure = 0;
+        for ok, result in esHelper.streaming_bulk(self.__esconnection, iterator, raise_on_error = False):
             if not ok:
+                failure = failure + 1                                    
                 __, result = result.popitem()
                 if result['status'] == 409:
                     print('Duplicate event detected, skipping it: {}'.format (result))
                 else:
                     print('Failed to record event: {}'.format(result))
+                
+                if(failure >= failureThreshold): 
+                    print('Reached threshold.')
+                    raise result;
             else:
                 success = success + 1;
                 
-        print('Success count: {}'.format(success))
+        print('Success count: {}, Failure count: {}'.format(success, failure))
            
     def info(self):
         return self.__esconnection.info()

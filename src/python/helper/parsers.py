@@ -60,9 +60,13 @@ class Utils:
             return None
         else:        
             if(mapping != None):
-                return mapping[str(boolean)]
+                try:
+                    return mapping[str(boolean)]
+                except Exception as ex:
+                    print ('PARSE_BOOL(error):{ex}. Returning default (False)'.format(ex= ex))
+                    return False;
             else:
-                return boolean =='True' 
+                return boolean =='True' ;
 
     @staticmethod
     def split(data, delimiter=',' ):
